@@ -1,0 +1,31 @@
+{% extends 'layouts.html' %}
+{% block content %}
+    
+        <pre id ="codebox" contenteditable="true" >{{ data.cd }}</pre>    
+      
+        {{ data.ip }}
+        {{ data.time }}
+    <br><br>
+  <form action="" method="POST">
+    <textarea id="codebox_h" name="code" rows="8" cols="80" hidden></textarea>
+    <input type="hidden" name="ip" id="ip">
+    <input type="hidden" name="date" id="date">
+  </form>
+  <script>
+    $("#codebox").on("keypress",function(){
+        copy();
+        $.ajax({
+            url: "edit/{{ data.ms }}",
+            method: 'POST',
+            data: $("form").serialize(),
+            success: function(data){
+                console.log(data);
+            }
+        });
+    });
+    $(document).ready(function(){
+      $("#codebox").html($("#codebox").text()).text(); 
+    })
+</script>
+<script type="application/javascript" src="https://api.ipify.org/?format=jsonp&callback=getIP" crossorigin="anonymous"></script>
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends 'layouts.html' %}
+{% block content %}
+
+    <pre id="codebox">
+
+    </pre>
+
+<script>
+    function refresh(){
+        $.ajax({
+            url: 'json/{{ajaxdata}}',
+            method: 'GET',
+            dataType: 'json',
+            success: function(data){
+                $("#codebox").text(data.code);
+                $("#codebox").html($("#codebox").text()).text(); 
+            }
+        });
+    }
+    setInterval(refresh,1000);
+</script>
+{% endblock %}
