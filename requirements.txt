@@ -8,4 +8,4 @@ Werkzeug==0.16.0
 zope.interface==4.7.1
 flask-wtf==0.14.2
 Flask-SQLAlchemy==2.4.1
-
+psycopg2==2.8.5
