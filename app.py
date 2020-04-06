@@ -4,7 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from time import ctime
 from hashlib import md5
 import os
-import psycopg2 2.8.5
+import psycopg2 
 
 
 app = Flask(__name__)
