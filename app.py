@@ -4,7 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from time import ctime
 from hashlib import md5
 import os
-import psycopg2 
+import psycopg2 2.8.5
 
 
 app = Flask(__name__)
@@ -17,8 +17,8 @@ db = SQLAlchemy(app)
 class Code(db.Model):
     ms = db.Column('code_id',db.String(6),primary_key = True)
     cd = db.Column(db.String(100000))
-    ip = db.Column(db.String(24))
-    time = db.Column(db.String(50))
+    ip = db.Column(db.String(48))
+    time = db.Column(db.String(70))
 
     def __init__(self,ms,cd,ip,time):
         self.ms = ms
