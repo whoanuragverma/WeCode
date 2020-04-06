@@ -3,10 +3,12 @@ from others import randomStringDigits
 from flask_sqlalchemy import SQLAlchemy
 from time import ctime
 from hashlib import md5
+import os
+
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = "djXEHjRAPPtzjNQRl7eJ.53/mgQDGWktEechrRhP45Ez"
-app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///database.db"
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -57,10 +59,9 @@ def jsonresp(word):
 def edit(word):
     if request.method == 'POST':
         data = Code.query.filter_by(ms=word).first()
-        db.session.delete(data)
-        db.session.commit()
-        data = Code(ms=word,cd=request.form['code'],ip=request.form['ip'],time=request.form['date'])
-        db.session.add(data)
+        data.cd = request.form['code']
+        data.ip = request.form['ip']
+        data.time = request.form['date']
         db.session.commit()
         return jsonify({"response":"saved","time":ctime()})
 
