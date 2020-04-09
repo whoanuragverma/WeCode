@@ -8,28 +8,36 @@ import psycopg2
 
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = "djXEHjRAPPtzjNQRl7eJ.53/mgQDGWktEechrRhP45Ez"
+app.config['SECRET_KEY'] = os.environ['SECRET_KEY']
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
 class Code(db.Model):
-    ms = db.Column('code_id',db.String(6),primary_key = True)
+    __tablename__ = "CodeBase"
+    ms = db.Column(db.String(6),primary_key = True)
     cd = db.Column(db.String(100000))
     ip = db.Column(db.String(48))
     time = db.Column(db.String(70))
+    ques = db.Column(db.String(100000))
+    cursor = db.Column(db.String(100))
+    epoch = db.Column(db.String(20))
 
-    def __init__(self,ms,cd,ip,time):
+    def __init__(self,ms,cd,ip,time,ques,cursor,epoch):
         self.ms = ms
         self.cd = cd
         self.ip = ip
         self.time = time
+        self.ques = ques
+        self.cursor = cursor
+        self.epoch = epoch
+
 
 @app.route('/')
 def home():
     ID = randomStringDigits() 
-    data = Code(ms=ID,cd="",ip="",time="")
+    data = Code(ms=ID,cd="",ip="",time="",ques="",cursor="",epoch="")
     db.session.add(data)
     db.session.commit()
     response = make_response(redirect(url_for('main',word=ID)))
@@ -43,6 +51,8 @@ def home():
 
 @app.route('/<word>')
 def main(word):
+    if(Code.query.filter_by(ms=word).first()==None):
+        return "404"
     trial = 1
     while (request.cookies.get('ID' + str(trial)) != None) or (request.cookies.get('ID' + str(trial)) == md5(word.encode()).hexdigest()):
         if request.cookies.get('admin') == 'true':
@@ -54,7 +64,7 @@ def main(word):
 @app.route('/json/<word>')
 def jsonresp(word):
     data = Code.query.filter_by(ms=word).first()
-    return jsonify({"code":data.cd,"ip":data.ip,"time":data.time})
+    return jsonify({"code":data.cd,"ip":data.ip,"time":data.time,"etime":data.epoch,"cur":data.cursor})
 
 @app.route('/edit/<word>',methods=['POST'])
 def edit(word):
@@ -63,8 +73,10 @@ def edit(word):
         data.cd = request.form['code']
         data.ip = request.form['ip']
         data.time = request.form['date']
+        data.epoch = request.form['etime']
+        data.cursor = request.form['caret']
         db.session.commit()
-        return jsonify({"response":"saved","time":ctime()})
+        return jsonify({"response":"saved","time":ctime(),"etime":data.epoch})
 
 if __name__ == "__main__":
     db.create_all()

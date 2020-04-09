@@ -1,25 +1,19 @@
 <html lang="en">
     <head>
-        <title>CodeShare</title>
+        <title>WeCode</title>
         <script src="https://code.jquery.com/jquery-3.4.1.min.js" crossorigin="anonymous"></script>
         <style>
-            *[contenteditable="true"]{width:100%;display: inline-block;height: 100%;}
+            *[contenteditable="true"] {
+                width: 100%;
+                display: inline-block;
+                height: 100%;
+            }
         </style>
-        <script>
-            function getIP(data){
-              document.getElementById("ip").value = data.ip;
-              document.getElementById("date").value = (new Date());
-            }
-            function copy(){
-                document.getElementById('codebox_h').value = document.getElementById("codebox").innerHTML;
-            }
-        </script>
-        
+        <script src="{{url_for('static',filename='main.js')}}"></script>
     </head>
     <body>
-    {% block content %}
+        {% block content %}
 
-    {% endblock %}
+        {% endblock %}
     </body>
-    
 </html>
